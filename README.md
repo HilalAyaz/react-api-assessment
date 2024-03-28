@@ -1,50 +1,32 @@
-# React Assessment Project
+# React Assessment - Project Details
 
-## Installation
+## Application Name
+React Assessment
 
-1. **Download the Zip File:**
+## Technologies Used
+React (Frontend)
 
-   - Download the zip file of the project from the provided source (e.g., email attachment, file sharing platform).
+## Deadline
+28th March - 3:30pm
 
-2. **Extract the Project:**
+## Default Credentials
+Default Email: "test@example.com"  
+Default Password: "Test1234"
 
-   - Extract the contents of the zip file to your desired location on your local machine.
+## Features Implemented
+1. Login/Signup Page with hardcoded credentials and proper form validation.
+2. Landing Page displaying products fetched from an open-source API.
+3. Header and Footer components integrated across all pages.
+4. Responsive design for login/signup page and landing page.
+5. Error handling and validation for user inputs.
+6. Clean and well-structured code with comments for better understanding.
 
-3. **Open Terminal/Command Prompt:**
+## Submission Details
+Attached to this email, you will find a zip file containing the source code of the project. The zip file includes all necessary files and dependencies required to run the application.
 
-   - Open a terminal or command prompt window.
-
-4. **Navigate to Project Directory:**
-
-   - Use the `cd` command to navigate to the directory where you extracted the project files.
-     ```bash
-     cd path/to/extracted/project
-     ```
-
-5. **Install Dependencies:**
-   - Install project dependencies using npm.
-     ```bash
-     npm install
-     ```
-
-## Usage
-
-1. **Start Development Server:**
-
-   - After the dependencies are installed, start the development server.
-     ```bash
-     npm start
-     ```
-
-2. **Access the App:**
-   - The development server will compile the project and automatically open the app in your default web browser at http://localhost:3000.
-   - If the browser doesn't open automatically, you can manually open the URL in your browser.
-
-## Additional Notes
-
-- **Node.js and npm:**
-  - Make sure you have Node.js and npm installed on your machine.
-- **Alternative Package Manager (Yarn):**
-  - If you prefer yarn for package management, you can use it instead of npm by running `yarn install` and `yarn start`.
-- **Modify Application Code:**
-  - Customize and modify the application code located in the src/ directory as needed for your project.
+## Instructions for Running the Application
+1. Extract the contents of the zip file to your local machine.
+2. Navigate to the project directory in your terminal/command prompt.
+3. Install dependencies using npm by running `npm install`.
+4. Start the development server using `npm start`.
+5. Access the application in your web browser at [http://localhost:3000](http://localhost:3000).
