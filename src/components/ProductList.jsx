@@ -20,12 +20,17 @@ const ProductList = () => {
         <h1 className="text-4xl font-bold mt-10 text-gray-700">Products</h1>
       </div>
       {/* Display list of products */}
+
       <div className="m-20 flex flex-row flex-wrap gap-10">
         {/* Map through the products array and render ProductItem component for each product */}
-        {products.slice(0, 10).map((product) => (
+
+        {products.slice(5, 15).map((product) => (
           <ProductItem key={product.id} product={product} />
         ))}
+
+
       </div>
+
     </div>
   );
 };

@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 
 const FormPage = () => {
-  // Define state variables for form data and form errors
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     name: '',
     email: '',
     phone: '',
@@ -10,56 +9,23 @@ const FormPage = () => {
     gender: '',
     message: '',
     image: null
-  })
-
-  const [formErrors, setFormErrors] = useState({})
-
-  // Handle form submission
-  const handleSubmit = e => {
-    e.preventDefault()
-    setFormErrors({})
-
-    const errors = {}
-    // Validate form data
-    if (!formData.name.trim()) {
-      errors.name = 'Please enter your name'
-    }
-    if (!formData.email.trim()) {
-      errors.email = 'Please enter your email address'
-    }
-    if (!formData.phone.trim()) {
-      errors.phone = 'Please enter your phone number'
-    }
-    if (!formData.address.trim()) {
-      errors.address = 'Please enter your address'
-    }
-    if (!formData.message.trim()) {
-      errors.message = 'Please enter a message'
-    }
-    if (!formData.image) {
-      errors.image = 'Please upload an image'
-    }
-
-    // Display errors if any
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors)
-      return
-    }
-
-    // If no errors, submit form data and reset form
-    console.log(formData)
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      address: '',
-      gender: '',
-      message: '',
-      image: null
-    })
   }
 
-  // Handle form input changes
+  const [formData, setFormData] = useState(initialFormData)
+  const [formErrors, setFormErrors] = useState({})
+  const [formSubmitted, setFormSubmitted] = useState(false)
+
+  const handleSubmit = e => {
+    e.preventDefault()
+    validateForm()
+
+    // Reset file input
+    const fileInput = document.getElementById('image')
+    if (fileInput) {
+      fileInput.value = ''
+    }
+  }
+
   const handleChange = e => {
     const { name, value } = e.target
     setFormData(prevData => ({
@@ -68,13 +34,76 @@ const FormPage = () => {
     }))
   }
 
-  // Handle file input change (for image upload)
+  const handleBlur = (e, regex, errorMessage) => {
+    const { name, value } = e.target
+    if (!regex.test(value)) {
+      setFormErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: errorMessage
+      }))
+    } else {
+      setFormErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: ''
+      }))
+    }
+  }
+
   const handleFileChange = e => {
     const file = e.target.files[0]
-    setFormData(prevData => ({
-      ...prevData,
-      image: file
-    }))
+    if (file) {
+      const allowedExtensions = /\.(jpg|jpeg|png|gif)$/i
+      if (!allowedExtensions.test(file.name)) {
+        setFormErrors(prevErrors => ({
+          ...prevErrors,
+          image:
+            'Please upload a valid image file (jpg, jpeg, png, gif) or a photo of your cat doing yoga.'
+        }))
+        setFormData(prevData => ({
+          ...prevData,
+          image: null
+        }))
+      } else {
+        setFormData(prevData => ({
+          ...prevData,
+          image: file
+        }))
+        setFormErrors(prevErrors => ({
+          ...prevErrors,
+          image: ''
+        }))
+      }
+    }
+  }
+
+  const validateForm = () => {
+    const errors = {}
+    for (const key in formData) {
+      if (key === 'image' && !formData[key]) {
+        errors[key] =
+          'Please upload an image. Remember, a picture is worth a thousand words!'
+      } else if (key !== 'image' && !formData[key].trim()) {
+        errors[
+          key
+        ] = `Please enter your ${key}. Don't be shy, we won't bite...unless you're a cookie. 🍪`
+      }
+    }
+    setFormErrors(errors)
+
+    if (Object.keys(errors).length === 0) {
+      // Simulate form submission
+      console.log(formData)
+      setFormSubmitted(true)
+      setTimeout(() => {
+        resetForm()
+      }, 3000) // Reset form after 3 seconds
+    }
+  }
+
+  const resetForm = () => {
+    setFormData(initialFormData)
+    setFormErrors({})
+    setFormSubmitted(false)
   }
 
   return (
@@ -86,6 +115,7 @@ const FormPage = () => {
         <h2 className='text-2xl font-semibold mb-4 text-center capitalize'>
           Let's hear from you
         </h2>
+        {/* Name */}
         <div className='mb-4'>
           <label
             htmlFor='name'
@@ -99,13 +129,20 @@ const FormPage = () => {
             name='name'
             value={formData.name}
             onChange={handleChange}
+            onBlur={e =>
+              handleBlur(
+                e,
+                /^[a-zA-Z ]*$/,
+                'Please enter a name. A clever name is like a good joke - it leaves an impression!'
+              )
+            }
             className='mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:ring-blue-400'
           />
-
           {formErrors.name && (
-            <p className='text-red-500 text-sm mt-1'>{formErrors.name}</p>
+            <p className='text-orange-600 text-sm mt-1'>{formErrors.name}</p>
           )}
         </div>
+        {/* Email */}
         <div className='mb-4'>
           <label
             htmlFor='email'
@@ -119,13 +156,20 @@ const FormPage = () => {
             name='email'
             value={formData.email}
             onChange={handleChange}
+            onBlur={e =>
+              handleBlur(
+                e,
+                /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                "Invalid email address. Did you enter your email or your cat's meow?"
+              )
+            }
             className='mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:ring-blue-400'
           />
-
           {formErrors.email && (
-            <p className='text-red-500 text-sm mt-1'>{formErrors.email}</p>
+            <p className='text-orange-600 text-sm mt-1'>{formErrors.email}</p>
           )}
         </div>
+        {/* Phone */}
         <div className='mb-4'>
           <label
             htmlFor='phone'
@@ -139,13 +183,20 @@ const FormPage = () => {
             name='phone'
             value={formData.phone}
             onChange={handleChange}
+            onBlur={e =>
+              handleBlur(
+                e,
+                /^[0-9]*$/,
+                "Please enter a valid 10-digit phone number. Don't worry, robots won't call you... we think."
+              )
+            }
             className='mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:ring-blue-400'
           />
-
           {formErrors.phone && (
-            <p className='text-red-500 text-sm mt-1'>{formErrors.phone}</p>
+            <p className='text-orange-600 text-sm mt-1'>{formErrors.phone}</p>
           )}
         </div>
+        {/* Address */}
         <div className='mb-4'>
           <label
             htmlFor='address'
@@ -159,13 +210,16 @@ const FormPage = () => {
             name='address'
             value={formData.address}
             onChange={handleChange}
+            onBlur={e =>
+              handleBlur(e, /^[a-zA-Z0-9\s,'-]*$/, 'Invalid address')
+            }
             className='mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:ring-blue-400'
           />
-
           {formErrors.address && (
-            <p className='text-red-500 text-sm mt-1'>{formErrors.address}</p>
+            <p className='text-orange-600 text-sm mt-1'>{formErrors.address}</p>
           )}
         </div>
+        {/* Gender */}
         <div className='mb-4'>
           <label className='block text-sm font-medium text-gray-700'>
             Gender
@@ -194,11 +248,11 @@ const FormPage = () => {
               <span className='ml-2'>Female</span>
             </label>
           </div>
-
           {formErrors.gender && (
-            <p className='text-red-500 text-sm mt-1'>{formErrors.gender}</p>
+            <p className='text-orange-600 text-sm mt-1'>{formErrors.gender}</p>
           )}
         </div>
+        {/* Message */}
         <div className='mb-4'>
           <label
             htmlFor='message'
@@ -211,20 +265,27 @@ const FormPage = () => {
             name='message'
             value={formData.message}
             onChange={handleChange}
+            onBlur={e =>
+              handleBlur(
+                e,
+                /^[a-zA-Z0-9\s.,!?()-]*$/,
+                "Your message cannot be empty. It's like sending a blank postcard to the Bermuda Triangle!"
+              )
+            }
             rows='4'
             className='mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:ring-blue-400'
           ></textarea>
-
           {formErrors.message && (
-            <p className='text-red-500 text-sm mt-1'>{formErrors.message}</p>
+            <p className='text-orange-600 text-sm mt-1'>{formErrors.message}</p>
           )}
         </div>
+        {/* Upload Image */}
         <div className='mb-4'>
           <label
             htmlFor='image'
             className='block text-sm font-medium text-gray-700'
           >
-            Upload Resume
+            Upload Image
           </label>
           <input
             type='file'
@@ -232,21 +293,27 @@ const FormPage = () => {
             name='image'
             accept='image/*'
             onChange={handleFileChange}
-            className='mt-1 p-2 w-full border rounded-md focus:outline-none '
+            className='mt-1 p-2 w-full border rounded-md focus:outline-none'
           />
-
           {formErrors.image && (
-            <p className='text-red-500 text-sm mt-1'>{formErrors.image}</p>
+            <p className='text-orange-600 text-sm mt-1'>{formErrors.image}</p>
           )}
         </div>
+        {/* Submit Button */}
         <div className='mt-6'>
           <button
             type='submit'
-            className='w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none '
+            className='w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none'
           >
             Submit
           </button>
         </div>
+        {/* Form Submission Success Message */}
+        {formSubmitted && (
+          <p className='text-green-500 mt-4 text-center'>
+            Form submitted successfully!
+          </p>
+        )}
       </form>
     </div>
   )

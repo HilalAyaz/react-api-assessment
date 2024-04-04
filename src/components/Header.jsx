@@ -75,7 +75,7 @@ const Header = ({ isLoggedIn, handleSignOut }) => {
 
         {/* Mobile menu */}
         {isOpen && (
-          <div className="absolute top-16 right-0 bg-slate-600/80 w-full md:hidden">
+          <div className="absolute top-16 right-0 bg-slate-600 w-full md:hidden">
             <ul className="flex flex-col justify-center items-center gap-5 py-5">
               {/* Map through navigation items */}
               {NavItems.map((item) => (
